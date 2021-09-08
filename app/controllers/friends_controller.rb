@@ -5,13 +5,23 @@ class FriendsController < ApplicationController
   # GET /friends or /friends.json
   def index
     @friends = Friend.all
+
+    if params[:search] && params[:search] != ""
+      if current_user.nil?
+        redirect_to new_user_session_path, notice: "Must be signed in to search."
+      else
+        @friends = @friends.where(" first_name || last_name || email || phone || twitter || (first_name || ' ' || last_name)  LIKE ?", "%#{params[:search]}%")
+        if @friends.blank?
+          redirect_to friends_path, notice: "No friends were found with those search terms."
+        end
+      end
+    end
   end
 
   # GET /friends/1 or /friends/1.json
   def show
   end
 
-  # GET /friends/new
   def new
     #@friend = Friend.new
     @friend = current_user.friends.build
