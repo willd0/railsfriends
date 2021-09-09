@@ -8,7 +8,7 @@ class FriendsController < ApplicationController
 
     if params[:search] && params[:search] != ""
       if current_user.nil?
-        redirect_to new_user_session_path, notice: "Must be signed in to search."
+       redirect_to new_user_session_path, notice: "Must be signed in to search."
       else
         @friends = @friends.where(" first_name || last_name || email || phone || twitter || (first_name || ' ' || last_name)  LIKE ?", "%#{params[:search]}%")
         if @friends.blank?
